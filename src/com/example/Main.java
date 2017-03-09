@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Main {
 
-	//TODO: transactions
 	public static void init(int n, int m) {
 		DBWorker.dropTables();
 		List<Tuple> wbsData = new ArrayList<>();
@@ -21,8 +20,6 @@ public class Main {
 			}
 		}
 		DBWorker.saveData(wbsData, actData);
-
-		//TODO: Нужен ли Identity? Может индексы ставятся правильно?
 	}
 
 	public static void main(String[] args) {

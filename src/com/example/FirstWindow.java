@@ -49,7 +49,6 @@ public class FirstWindow {
 	}
 
 	private void createUIComponents() {
-		// TODO: place custom component creation code here
 		NumberFormat format = NumberFormat.getInstance();
 		NumberFormatter formatter = new NumberFormatter(format);
 		formatter.setValueClass(Integer.class);
