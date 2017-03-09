@@ -189,8 +189,24 @@ public class DBWorker {
 				result.put(rs2.getInt("id"), rs2.getDouble("sumWbs"));
 			}
 
+			sql = "SELECT wbs.id, SUM(sumWbs) AS sumWbs\n" +
+					"FROM wbs JOIN(\n" +
+					"SELECT wbs.id, wbs.parent_id, SUM(sumQnt) AS sumWbs\n" +
+					"FROM wbs JOIN (\n" +
+					"SELECT wbs.id, wbs.parent_id, SUM(quantity) AS sumQnt\n" +
+					"FROM wbs JOIN activities ON wbs.id = activities.wbs_id\n" +
+					"GROUP BY wbs.id, wbs.parent_id) AS rs ON wbs.id = rs.parent_id\n" +
+					"GROUP BY wbs.id, wbs.parent_id) AS rs ON wbs.id = rs.parent_id\n" +
+					"GROUP BY wbs.id";
+			ResultSet rs3 = statement.executeQuery(sql);
+
+			while (rs3.next()) {
+				result.put(rs3.getInt("id"), rs3.getDouble("sumWbs"));
+			}
+
 			rs1.close();
 			rs2.close();
+			rs3.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
