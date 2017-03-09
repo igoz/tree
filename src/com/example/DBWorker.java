@@ -2,12 +2,14 @@ package com.example;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DBWorker {
 	private static String url = "jdbc:sqlserver://ИГОРЬ-ПК\\IBICONSERVER:1433;databaseName=wbs_and_activities;";
 	private static String user = "sa";
-	private static String pass = "password";
+	private static String pass = "20121994";
 
 	public static void dropTables() {
 		try {
@@ -153,4 +155,47 @@ public class DBWorker {
 
 		return result;
 	}
+
+	public static Map<Integer, Double> sumActToWbs() {
+		Map<Integer, Double> result = new HashMap<>();
+
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		try(Connection conn = DriverManager.getConnection(url, user, pass);
+				Statement statement = conn.createStatement()) {
+
+			String sql = "SELECT wbs.id, SUM(quantity) AS sumQnt" +
+					" FROM wbs JOIN activities ON wbs.id = activities.wbs_id" +
+					" GROUP BY wbs.id";
+			ResultSet rs1 = statement.executeQuery(sql);
+
+			while (rs1.next()) {
+				result.put(rs1.getInt("id"), rs1.getDouble("sumQnt"));
+			}
+
+			sql = "SELECT wbs.id, SUM(sumQnt) AS sumWbs\n" +
+					"FROM wbs JOIN (\n" +
+					"SELECT wbs.id, wbs.parent_id, SUM(quantity) AS sumQnt\n" +
+					"FROM wbs JOIN activities ON wbs.id = activities.wbs_id\n" +
+					"GROUP BY wbs.id, wbs.parent_id) AS rs ON wbs.id = rs.parent_id\n" +
+					"group by wbs.id";
+			ResultSet rs2 = statement.executeQuery(sql);
+
+			while (rs2.next()) {
+				result.put(rs2.getInt("id"), rs2.getDouble("sumWbs"));
+			}
+
+			rs1.close();
+			rs2.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
 }

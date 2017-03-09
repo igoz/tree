@@ -28,13 +28,19 @@ public class SecondWindow {
 		Map<Integer, DefaultMutableTreeNode> wbsMap = new TreeMap<>();
 		Map<Integer, List<DefaultMutableTreeNode>> wbsMapParent = new TreeMap<>();
 		Map<Integer, List<DefaultMutableTreeNode>> actMapParent = new TreeMap<>();
+		Map<Integer, Double> actSum = DBWorker.sumActToWbs();
 
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
 		wbsMap.put(0, root);
 
 		for (Tuple elem: wbsData) {
 			WbsTuple tmp = (WbsTuple) elem;
-			DefaultMutableTreeNode node = new DefaultMutableTreeNode(tmp.getName());
+			DefaultMutableTreeNode node;
+			if (actSum.containsKey(tmp.getId())) {
+				node = new DefaultMutableTreeNode(tmp.getName() + " (" + actSum.get(tmp.getId()).intValue() + ")");
+			} else {
+				node = new DefaultMutableTreeNode(tmp.getName());
+			}
 			wbsMap.put(tmp.getId(), node);
 			if (wbsMapParent.containsKey(tmp.getParent_id())) {
 				wbsMapParent.get(tmp.getParent_id()).add(node);
@@ -47,7 +53,7 @@ public class SecondWindow {
 
 		for (Tuple elem: actData) {
 			ActivitiesTuple tmp = (ActivitiesTuple) elem;
-			DefaultMutableTreeNode node = new DefaultMutableTreeNode(tmp.getName());
+			DefaultMutableTreeNode node = new DefaultMutableTreeNode(tmp.getName() + " (" + (int) tmp.getQuantity() + ")");
 			if (actMapParent.containsKey(tmp.getWbs_id())) {
 				actMapParent.get(tmp.getWbs_id()).add(node);
 			} else {
@@ -56,7 +62,7 @@ public class SecondWindow {
 				actMapParent.put(tmp.getWbs_id(), list);
 			}
 		}
-
+		
 		for (Map.Entry<Integer, List<DefaultMutableTreeNode>> elem: wbsMapParent.entrySet()) {
 			int parentId = elem.getKey();
 			List<DefaultMutableTreeNode> list = elem.getValue();

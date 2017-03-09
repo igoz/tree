@@ -55,7 +55,7 @@ public class Utils {
 			WbsTuple parent = (WbsTuple) wbsTupleMap.get(actIdxs.get(i - 1));
 			String name = parent.getName().substring(4);
 			activitiesTupleList.add(new ActivitiesTuple(act_id_offset, "Activity" + name + "." + i,
-					parent.getId(), rnd.nextDouble()));
+					parent.getId(), rnd.nextInt(200) + 100));
 			act_id_offset++;
 		}
 
