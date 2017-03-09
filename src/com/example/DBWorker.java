@@ -9,7 +9,7 @@ import java.util.Map;
 public class DBWorker {
 	private static String url = "jdbc:sqlserver://ИГОРЬ-ПК\\IBICONSERVER:1433;databaseName=wbs_and_activities;";
 	private static String user = "sa";
-	private static String pass = "20121994";
+	private static String pass = "password";
 
 	public static void dropTables() {
 		try {
