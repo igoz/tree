@@ -39,7 +39,7 @@ public class SecondWindow {
 			if (actSum.containsKey(tmp.getId())) {
 				node = new DefaultMutableTreeNode(tmp.getName() + " (" + actSum.get(tmp.getId()).intValue() + ")");
 			} else {
-				node = new DefaultMutableTreeNode(tmp.getName());
+				node = new DefaultMutableTreeNode(tmp.getName() + " (0)");
 			}
 			wbsMap.put(tmp.getId(), node);
 			if (wbsMapParent.containsKey(tmp.getParent_id())) {
